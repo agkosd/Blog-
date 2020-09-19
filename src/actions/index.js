@@ -1,5 +1,12 @@
-import { bindActionCreators } from "redux";
+import _, { forEach } from "lodash";
 import jsonPlaceholder from "../apis/jsonPlaceholder";
+
+export const fetchPostsandUsers = () => async(dispatch, getState)=>{
+  await dispatch(fetchPosts());
+
+  const userIds = _.uniq(_.map(getState().posts, 'userId'));
+  userIds.forEach(id=>dispatch(fetchUsers(id)));
+};
 
 export const fetchPosts = () => {
   return async (dispatch, getState) => {
@@ -11,7 +18,7 @@ export const fetchPosts = () => {
   };
 };
 
-export const fetchUsers = (id = 1) => {
+export const fetchUsers = (id) => {
   return async (dispatch, getState) => {
     const response = await jsonPlaceholder.get(`/users/${id}`);
     dispatch({
@@ -20,3 +27,5 @@ export const fetchUsers = (id = 1) => {
     });
   };
 };
+
+
